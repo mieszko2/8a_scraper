@@ -8,3 +8,4 @@ build/
 *egg-info/
 *.ipynb
 data.csv
+config/CONFIG.env
