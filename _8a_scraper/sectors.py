@@ -1,8 +1,7 @@
 import json
-import time
 import pandas as pd
 from slugify import slugify
-from utils import get_route_ascents_from_link, get_links_to_routes_from_a_crag,\
+from _8a_scraper.utils import get_route_ascents_from_link, get_links_to_routes_from_a_crag,\
     get_sector_name_from_route_link, get_route_name_from_route_link
 
 
@@ -54,9 +53,8 @@ def get_crag_ascents(driver, category, country, crag, min_number_of_ascents):
     :param min_number_of_ascents: int: minimal ascents the route should have to count it
     :return: pandas.DataFrame: list of crag ascents: route, sector, date
     """
-    #TODO Raise exception when there is no such crag
-    routes_links = get_links_to_routes_from_a_crag(driver, category, country, crag, min_number_of_ascents)
 
+    routes_links = get_links_to_routes_from_a_crag(driver, category, country, crag, min_number_of_ascents)
     crag_ascents = pd.DataFrame()
     for link in routes_links:
         print('sciagam dane dla drogi')

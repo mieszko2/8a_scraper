@@ -1,6 +1,8 @@
 import os
 import time
 import json
+import pandas as pd
+from slugify import slugify
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 
@@ -22,6 +24,22 @@ def login():
     driver.find_element_by_id('kc-login').submit()
     time.sleep(0.5)
     return driver
+
+
+def get_route_name_from_route_link(driver, route_link):
+    """
+    Get route name from a route link
+    :param driver: selenium driver: driver logged into 8a.nu
+    :param route_link: string: link to a route
+    :return: string: Name of the route
+    """
+
+    time.sleep(2)
+    url = route_link.replace('8a.nu/crags', '8a.nu/api/crags')
+    driver.get(url)
+    pre = driver.find_element_by_tag_name('pre').text
+    data = json.loads(pre)
+    return data['zlaggable']['zlaggableName']
 
 
 def get_route_ascents_from_link(driver, route_link):
