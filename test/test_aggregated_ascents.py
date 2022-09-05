@@ -13,9 +13,10 @@ class TestSectors(unittest.TestCase):
 
     def test_get_crag_ascents(self):
         driver = login()
-        crag_ascents = get_crag_ascents(driver, 'sportclimbing', 'Poland', 'Dolina Szklarki', 400)
+        crag_ascents = get_crag_ascents(driver, 'sportclimbing', 'Poland', 'Dolina Szklarki',
+                                        400, '2020-01-01T12:00:00+00:00')
         driver.close()
-        self.assertGreater(crag_ascents.shape[0], 2000)
+        self.assertGreater(crag_ascents.shape[0], 100)
         self.assertEqual(list(crag_ascents.columns), ['date', 'route_name', 'sector_name'])
 
 
