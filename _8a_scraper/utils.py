@@ -1,6 +1,7 @@
 import os
 import time
 import json
+from dateparser import parse
 import pandas as pd
 from slugify import slugify
 from selenium import webdriver
@@ -42,16 +43,18 @@ def get_route_name_from_route_link(driver, route_link):
     return data['zlaggable']['zlaggableName']
 
 
-def get_route_ascents_from_link(driver, route_link):
+def get_route_ascents_from_link(driver, route_link, min_date='1950-01-01T12:00:00+00:00'):
     """ Get list of ascents of a given route from it's 8a.nu link
     :param driver: selenium driver: driver logged into 8a
     :param route_link: string: link to a given route
+    :param min_date: string: date since when ascents should be downloaded
     :return: route_data: pandas dataframe
     """
     time.sleep(3)
     url = route_link
     url = url.replace('8a.nu/crags', '8a.nu/api/crags')
     url += 'ascents?pageIndex={}&sortfield='
+    min_date = parse(min_date)
 
     page_index = 0
     route_ascents = []
@@ -60,10 +63,15 @@ def get_route_ascents_from_link(driver, route_link):
         time.sleep(1)
         pre = driver.find_element_by_tag_name('pre').text
         data = json.loads(pre)
+        # go through data to check if ascent was after min_date
+        tmp_data = []
+        for ascent_data in data['items']:
+            if parse(ascent_data['date']) > min_date:
+                tmp_data.append(ascent_data)
         # add ascents from a given page
-        route_ascents += data['items']
-        # break if there is no next page
-        if not data['pagination']['hasNext']:
+        route_ascents += tmp_data
+        # break loop if there is no next page or if date condition was broken
+        if not data['pagination']['hasNext'] or (len(tmp_data) < len(data)):
             break
         page_index += 1
     return pd.DataFrame(route_ascents)
