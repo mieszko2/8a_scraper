@@ -6,5 +6,5 @@ test/__pycache__/*
 dist/
 build/
 *egg-info/
-*.ipynb
-data.csv
+*.ipynb_checkpoints
+/config/
